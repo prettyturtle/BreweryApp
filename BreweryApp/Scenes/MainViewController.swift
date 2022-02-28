@@ -16,6 +16,7 @@ class MainViewController: UIViewController {
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
         
+        tableView.rowHeight = 150.0
         tableView.dataSource = self
         tableView.register(MainTableViewCell.self, forCellReuseIdentifier: MainTableViewCell.identifier)
         
@@ -28,7 +29,6 @@ class MainViewController: UIViewController {
         setupLayout()
         fetch()
     }
-    
 }
 
 extension MainViewController: UITableViewDataSource {

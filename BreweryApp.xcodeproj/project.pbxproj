@@ -17,6 +17,7 @@
 		6B45961F27CA87C7004D9D01 /* Brewery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B45961E27CA87C7004D9D01 /* Brewery.swift */; };
 		6B45962327CA957A004D9D01 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 6B45962227CA957A004D9D01 /* README.md */; };
 		6BDF33E027CBB2C600463F47 /* MainTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BDF33DF27CBB2C600463F47 /* MainTableViewCell.swift */; };
+		6BDF33E327CC49CD00463F47 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 6BDF33E227CC49CD00463F47 /* Kingfisher */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -38,6 +39,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6BDF33E327CC49CD00463F47 /* Kingfisher in Frameworks */,
 				6B45961B27CA8579004D9D01 /* SnapKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -67,8 +69,7 @@
 			children = (
 				6B45960527CA812C004D9D01 /* AppDelegate.swift */,
 				6B45960727CA812C004D9D01 /* SceneDelegate.swift */,
-				6B45960927CA812C004D9D01 /* MainViewController.swift */,
-				6BDF33DF27CBB2C600463F47 /* MainTableViewCell.swift */,
+				6BDF33E427CC4C4000463F47 /* Scenes */,
 				6B45962027CA8D22004D9D01 /* Model */,
 				6B45962127CA8D2D004D9D01 /* Fetch */,
 				6B45960E27CA812E004D9D01 /* Assets.xcassets */,
@@ -94,6 +95,15 @@
 			path = Fetch;
 			sourceTree = "<group>";
 		};
+		6BDF33E427CC4C4000463F47 /* Scenes */ = {
+			isa = PBXGroup;
+			children = (
+				6B45960927CA812C004D9D01 /* MainViewController.swift */,
+				6BDF33DF27CBB2C600463F47 /* MainTableViewCell.swift */,
+			);
+			path = Scenes;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -112,6 +122,7 @@
 			name = BreweryApp;
 			packageProductDependencies = (
 				6B45961A27CA8579004D9D01 /* SnapKit */,
+				6BDF33E227CC49CD00463F47 /* Kingfisher */,
 			);
 			productName = BreweryApp;
 			productReference = 6B45960227CA812C004D9D01 /* BreweryApp.app */;
@@ -143,6 +154,7 @@
 			mainGroup = 6B4595F927CA812C004D9D01;
 			packageReferences = (
 				6B45961927CA8579004D9D01 /* XCRemoteSwiftPackageReference "SnapKit" */,
+				6BDF33E127CC49CD00463F47 /* XCRemoteSwiftPackageReference "Kingfisher" */,
 			);
 			productRefGroup = 6B45960327CA812C004D9D01 /* Products */;
 			projectDirPath = "";
@@ -396,6 +408,14 @@
 				minimumVersion = 5.0.0;
 			};
 		};
+		6BDF33E127CC49CD00463F47 /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/onevcat/Kingfisher.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 7.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -403,6 +423,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 6B45961927CA8579004D9D01 /* XCRemoteSwiftPackageReference "SnapKit" */;
 			productName = SnapKit;
+		};
+		6BDF33E227CC49CD00463F47 /* Kingfisher */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6BDF33E127CC49CD00463F47 /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			productName = Kingfisher;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
