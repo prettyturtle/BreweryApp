@@ -18,6 +18,7 @@
 		6B45962327CA957A004D9D01 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 6B45962227CA957A004D9D01 /* README.md */; };
 		6BDF33E027CBB2C600463F47 /* MainTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BDF33DF27CBB2C600463F47 /* MainTableViewCell.swift */; };
 		6BDF33E327CC49CD00463F47 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 6BDF33E227CC49CD00463F47 /* Kingfisher */; };
+		6BDF33E627CC5A6600463F47 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BDF33E527CC5A6600463F47 /* DetailViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +33,7 @@
 		6B45961E27CA87C7004D9D01 /* Brewery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Brewery.swift; sourceTree = "<group>"; };
 		6B45962227CA957A004D9D01 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		6BDF33DF27CBB2C600463F47 /* MainTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTableViewCell.swift; sourceTree = "<group>"; };
+		6BDF33E527CC5A6600463F47 /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,6 +102,7 @@
 			children = (
 				6B45960927CA812C004D9D01 /* MainViewController.swift */,
 				6BDF33DF27CBB2C600463F47 /* MainTableViewCell.swift */,
+				6BDF33E527CC5A6600463F47 /* DetailViewController.swift */,
 			);
 			path = Scenes;
 			sourceTree = "<group>";
@@ -189,6 +192,7 @@
 				6B45961F27CA87C7004D9D01 /* Brewery.swift in Sources */,
 				6BDF33E027CBB2C600463F47 /* MainTableViewCell.swift in Sources */,
 				6B45960827CA812C004D9D01 /* SceneDelegate.swift in Sources */,
+				6BDF33E627CC5A6600463F47 /* DetailViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

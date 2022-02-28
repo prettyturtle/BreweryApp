@@ -18,16 +18,28 @@ class MainViewController: UIViewController {
         
         tableView.rowHeight = 150.0
         tableView.dataSource = self
+        tableView.delegate = self
         tableView.register(MainTableViewCell.self, forCellReuseIdentifier: MainTableViewCell.identifier)
         
         return tableView
     }()
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setupNavigationItem()
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupNavigationItem()
         setupLayout()
         fetch()
+    }
+}
+
+extension MainViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let detailViewController = DetailViewController()
+        detailViewController.brewery = breweryList[indexPath.row]
+        navigationController?.pushViewController(detailViewController, animated: true)
     }
 }
 
