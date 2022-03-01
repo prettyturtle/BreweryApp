@@ -34,6 +34,7 @@ class DetailViewController: UIViewController {
         let label = UILabel()
         
         label.font = .systemFont(ofSize: 18.0, weight: .semibold)
+        label.numberOfLines = 0
         
         return label
     }()
@@ -41,7 +42,9 @@ class DetailViewController: UIViewController {
     private lazy var taglineLabel: UILabel = {
         let label = UILabel()
         
-        label.font = .systemFont(ofSize: 16.0, weight: .medium)
+        label.font = .systemFont(ofSize: 14.0, weight: .regular)
+        label.textColor = .systemBlue
+        label.numberOfLines = 0
         
         return label
     }()
@@ -93,7 +96,7 @@ private extension DetailViewController {
         view.backgroundColor = .systemBackground
         guard let brewery = brewery else { return }
         setupLayout()
-        beerImageView.kf.setImage(with: brewery.imageURL)
+        beerImageView.kf.setImage(with: brewery.imageURL, placeholder: UIImage(named: "beer"))
         nameLabel.text = brewery.name
         taglineLabel.text = brewery.tagline
         descriptionLabel.text = brewery.description

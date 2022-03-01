@@ -9,7 +9,9 @@ import UIKit
 import SnapKit
 
 class MainViewController: UIViewController {
-
+    
+    var currentPage = 1
+    
     private let fetchData = FetchData()
     private var breweryList: [Brewery] = []
     
@@ -41,6 +43,20 @@ extension MainViewController: UITableViewDelegate {
         detailViewController.brewery = breweryList[indexPath.row]
         navigationController?.pushViewController(detailViewController, animated: true)
     }
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        guard currentPage != 1 else { return }
+        if (indexPath.row + 1) / 25 + 1 == currentPage {
+            print(currentPage, indexPath.row)
+            fetchData.fetch(page: currentPage) { [weak self] breweryList, page in
+                guard let self = self else { return }
+                self.breweryList.append(contentsOf: breweryList)
+                self.currentPage = page
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
+            }
+        }
+    }
 }
 
 extension MainViewController: UITableViewDataSource {
@@ -56,9 +72,10 @@ extension MainViewController: UITableViewDataSource {
 
 private extension MainViewController {
     func fetch() {
-        fetchData.fetch { [weak self] breweryList in
+        fetchData.fetch(page: currentPage) { [weak self] breweryList, page in
             guard let self = self else { return }
             self.breweryList = breweryList
+            self.currentPage = page
             DispatchQueue.main.async {
                 self.tableView.reloadData()
             }

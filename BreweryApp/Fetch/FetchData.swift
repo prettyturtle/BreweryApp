@@ -8,10 +8,10 @@
 import Foundation
 
 struct FetchData {
-    func fetch(completionHandler: @escaping ([Brewery]) -> Void) {
+    func fetch(page: Int, completionHandler: @escaping ([Brewery], Int) -> Void) {
         guard var component = URLComponents(string: "https://api.punkapi.com/v2/beers") else { return }
-        let queryItem = URLQueryItem(name: "page", value: "1")
-        component.queryItems?.append(queryItem)
+        let queryItem = URLQueryItem(name: "page", value: "\(page)")
+        component.queryItems = [queryItem]
         guard let url = component.url else { return }
         
         URLSession.shared.dataTask(with: url) { data, response, error in
@@ -22,7 +22,7 @@ struct FetchData {
                 
                 do {
                     let result = try JSONDecoder().decode([Brewery].self, from: data)
-                    completionHandler(result)
+                    completionHandler(result, page+1)
                 } catch {
                     print("do-catch { \(error.localizedDescription) }")
                 }
