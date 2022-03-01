@@ -84,9 +84,13 @@ class DetailViewController: UIViewController {
         return label
     }()
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setupNavigationItem()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupNavigationItem()
         setupView()
     }
 }
