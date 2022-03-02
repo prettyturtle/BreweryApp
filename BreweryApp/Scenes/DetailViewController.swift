@@ -9,9 +9,21 @@ import UIKit
 import SnapKit
 import Kingfisher
 
+enum Like {
+    case like
+    case unlike
+}
+enum PushedFrom {
+    case mainVC
+    case likedVC
+}
+
 class DetailViewController: UIViewController {
     
     var brewery: Brewery?
+    var pushedFrom: PushedFrom?
+    var likeStatus: Like = .unlike
+    private let userDefaultsManager = UserDefaultsManager()
     
     private let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
@@ -87,6 +99,7 @@ class DetailViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         setupNavigationItem()
+        setupLikeBarButton()
     }
     
     override func viewDidLoad() {
@@ -94,8 +107,34 @@ class DetailViewController: UIViewController {
         setupView()
     }
 }
+extension DetailViewController {
+    @objc func didTapRightBarButton() {
+        guard var brewery = brewery else { return }
+        switch likeStatus {
+        case .unlike:
+            navigationItem.rightBarButtonItem?.image = UIImage(systemName: "star.fill")
+            brewery.like = true
+            _ = userDefaultsManager.saveBrewery(brewery: brewery)
+            // TODO: 저장할때 이미 있다면 Alert를 띄어주기
+            likeStatus = .like
+        case .like:
+            navigationItem.rightBarButtonItem?.image = UIImage(systemName: "star")
+            brewery.like = false
+            userDefaultsManager.removeBrewery(brewery: brewery)
+            likeStatus = .unlike
+        }
+    }
+}
 
 private extension DetailViewController {
+    func setupLikeBarButton() {
+        switch likeStatus {
+        case .like:
+            navigationItem.rightBarButtonItem?.image = UIImage(systemName: "star.fill")
+        case .unlike:
+            navigationItem.rightBarButtonItem?.image = UIImage(systemName: "star")
+        }
+    }
     func setupView() {
         view.backgroundColor = .systemBackground
         guard let brewery = brewery else { return }
@@ -107,6 +146,7 @@ private extension DetailViewController {
         abvLabel.text = "• 도수: \(brewery.abv)%"
         foodPairingLabel.text = "• 어울리는 음식🍗: " + brewery.foodPairing.joined(separator: ", ")
         tipsLabel.text = "• Tip⭐️: " + brewery.tips
+        likeStatus = userDefaultsManager.isInLikedBreweryList(brewery: brewery) ? .like : .unlike
     }
     func setupLayout() {
         view.addSubview(scrollView)
@@ -170,6 +210,17 @@ private extension DetailViewController {
     func setupNavigationItem() {
         navigationItem.title = "상세정보🍻"
         navigationController?.navigationBar.prefersLargeTitles = false
-        navigationController?.navigationBar.topItem?.backButtonTitle = "🍺"
+        switch pushedFrom! {
+        case .mainVC:
+            navigationController?.navigationBar.topItem?.backButtonTitle = "🍺"
+        case .likedVC:
+            navigationController?.navigationBar.topItem?.backButtonTitle = "👍"
+        }
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            image: UIImage(systemName: "star"),
+            style: .plain,
+            target: self,
+            action: #selector(didTapRightBarButton)
+        )
     }
 }

@@ -7,8 +7,8 @@
 
 import Foundation
 
-struct Brewery: Decodable {
-    let id: Int // 무한 스크롤 확인용
+struct Brewery: Codable {
+    let id: Int
     let name: String
     let taglineString: String
     var tagline: String {
@@ -24,12 +24,13 @@ struct Brewery: Decodable {
     var imageURL: URL? { URL(string: image ?? "") }
     let foodPairing: [String]
     let tips: String
+    var like: Bool = false
     
     enum CodingKeys: String, CodingKey {
         case taglineString = "tagline"
         case image = "image_url"
         case foodPairing = "food_pairing"
         case tips = "brewers_tips"
-        case id, name, description, abv // id : 무한 스크롤 확인용
+        case id, name, description, abv
     }
 }

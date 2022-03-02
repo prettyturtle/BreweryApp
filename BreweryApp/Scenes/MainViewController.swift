@@ -18,7 +18,7 @@ class MainViewController: UIViewController {
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
         
-        tableView.rowHeight = 150.0
+        tableView.rowHeight = MainTableViewCell.rowHeight
         tableView.dataSource = self
         tableView.delegate = self
         tableView.register(MainTableViewCell.self, forCellReuseIdentifier: MainTableViewCell.identifier)
@@ -29,6 +29,11 @@ class MainViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         setupNavigationItem()
+    }
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        navigationItem.title = ""
+        navigationController?.navigationBar.prefersLargeTitles = false
     }
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,12 +46,12 @@ extension MainViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let detailViewController = DetailViewController()
         detailViewController.brewery = breweryList[indexPath.row]
+        detailViewController.pushedFrom = .mainVC
         navigationController?.pushViewController(detailViewController, animated: true)
     }
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         guard currentPage != 1 else { return }
         if (indexPath.row + 1) / 25 + 1 == currentPage {
-            print(currentPage, indexPath.row)
             fetchData.fetch(page: currentPage) { [weak self] breweryList, page in
                 guard let self = self else { return }
                 self.breweryList.append(contentsOf: breweryList)
@@ -66,7 +71,15 @@ extension MainViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: MainTableViewCell.identifier, for: indexPath) as? MainTableViewCell else { return UITableViewCell() }
         cell.setupView(brewery: breweryList[indexPath.row])
+        cell.selectionStyle = .none
         return cell
+    }
+}
+
+extension MainViewController {
+    @objc func didTapRightBarButton() {
+        let likedViewController = LikedViewController()
+        navigationController?.pushViewController(likedViewController, animated: true)
     }
 }
 
@@ -93,5 +106,11 @@ private extension MainViewController {
     func setupNavigationItem() {
         navigationItem.title = "브루어리🍺"
         navigationController?.navigationBar.prefersLargeTitles = true
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            image: UIImage(systemName: "bookmark.circle.fill"),
+            style: .plain,
+            target: self,
+            action: #selector(didTapRightBarButton)
+        )
     }
 }

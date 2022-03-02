@@ -10,6 +10,7 @@ import SnapKit
 import Kingfisher
 
 class MainTableViewCell: UITableViewCell {
+    static let rowHeight = 150.0
     static let identifier = "MainTableViewCell"
     
     private lazy var beerImageView: UIImageView = {
