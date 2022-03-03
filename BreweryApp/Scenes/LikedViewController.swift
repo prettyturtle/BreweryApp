@@ -9,7 +9,6 @@ import UIKit
 import SnapKit
 
 class LikedViewController: UIViewController {
-    // TODO: 즐겨찾기 탭에서 상세정보 탭으로 간 상황에서 즐겨찾기를 해제했을 때, 다시 즐겨찾기 탭으로 넘어오면 적용이 안되어있는 점. 수정해야함
     var likedBreweryList = [Brewery]()
     private let userDefaultsManager = UserDefaultsManager()
     
@@ -43,6 +42,95 @@ class LikedViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         setupNavigationItem()
+        setupEmptyImage()
+    }
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setupLayout()
+        likedBreweryList = userDefaultsManager.getBreweryList()
+    }
+}
+extension LikedViewController: LikeButtonProtocol {
+    func didTapLikeButton(brewery: Brewery) {
+        _ = userDefaultsManager.saveBrewery(brewery: brewery)
+        likedBreweryList = userDefaultsManager.getBreweryList()
+        tableView.reloadData()
+    }
+    
+    func didTapUnLikeButton(brewery: Brewery) {
+        userDefaultsManager.removeBrewery(brewery: brewery)
+        likedBreweryList = userDefaultsManager.getBreweryList()
+        tableView.reloadData()
+    }
+}
+
+extension LikedViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let detailViewController = DetailViewController()
+        detailViewController.brewery = likedBreweryList[indexPath.row]
+        detailViewController.pushedFrom = .likedVC
+        detailViewController.likeButtonDelegate = self
+        navigationController?.pushViewController(detailViewController, animated: true)
+    }
+    
+    // TODO: 셀의 순서 변경 또는 밀어서 삭제 기능 추가 예정
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            userDefaultsManager.removeBrewery(brewery: likedBreweryList[indexPath.row])
+            likedBreweryList.remove(at: indexPath.row)
+            tableView.reloadData()
+            setupEmptyImage()
+        }
+    }
+    func tableView(_ tableView: UITableView, titleForDeleteConfirmationButtonForRowAt indexPath: IndexPath) -> String? {
+        return "삭제"
+    }
+//    func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+//TODO: 셀 순서 변경 구현 예정
+//    }
+}
+extension LikedViewController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return likedBreweryList.count
+    }
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: MainTableViewCell.identifier, for: indexPath) as? MainTableViewCell else { return UITableViewCell() }
+        cell.setupView(brewery: likedBreweryList[indexPath.row])
+        cell.selectionStyle = .none
+        cell.addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(willEditingMode(_:))))
+        
+        return cell
+    }
+    @objc func willEditingMode(_ gestureRecognizer: UILongPressGestureRecognizer) {
+        gestureRecognizer.minimumPressDuration = 0.8
+        if gestureRecognizer.state == .began {
+            let generator = UIImpactFeedbackGenerator(style: .heavy)
+            generator.impactOccurred()
+            setupEditingMode()
+        }
+    }
+}
+
+private extension LikedViewController {
+    func setupEditingMode() {
+        if tableView.isEditing {
+            tableView.setEditing(false, animated: true)
+        } else {
+            tableView.setEditing(true, animated: true)
+        }
+    }
+    func setupLayout() {
+        view.addSubview(tableView)
+        tableView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+        }
+    }
+    func setupNavigationItem() {
+        navigationItem.title = "좋아요"
+        navigationController?.navigationBar.prefersLargeTitles = false
+        navigationController?.navigationBar.topItem?.backButtonTitle = "🍺"
+    }
+    func setupEmptyImage() {
         if likedBreweryList.isEmpty {
             [imageView, emptyLabel].forEach { view.addSubview($0) }
             imageView.snp.makeConstraints {
@@ -54,53 +142,5 @@ class LikedViewController: UIViewController {
                 $0.centerX.equalTo(imageView.snp.centerX)
             }
         }
-    }
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        setupLayout()
-        likedBreweryList = userDefaultsManager.getBreweryList()
-    }
-}
-extension LikedViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let detailViewController = DetailViewController()
-        detailViewController.brewery = likedBreweryList[indexPath.row]
-        detailViewController.pushedFrom = .likedVC
-        navigationController?.pushViewController(detailViewController, animated: true)
-    }
-    
-    // TODO: 셀의 순서 변경 또는 밀어서 삭제 기능 추가 예정
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            userDefaultsManager.removeBrewery(brewery: likedBreweryList[indexPath.row])
-            likedBreweryList.remove(at: indexPath.row)
-            tableView.reloadData()
-        }
-    }
-}
-extension LikedViewController: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return likedBreweryList.count
-    }
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: MainTableViewCell.identifier, for: indexPath) as? MainTableViewCell else { return UITableViewCell() }
-        cell.setupView(brewery: likedBreweryList[indexPath.row])
-        cell.selectionStyle = .none
-        return cell
-    }
-    
-}
-
-private extension LikedViewController {
-    func setupLayout() {
-        view.addSubview(tableView)
-        tableView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
-        }
-    }
-    func setupNavigationItem() {
-        navigationItem.title = "좋아요"
-        navigationController?.navigationBar.prefersLargeTitles = false
-        navigationController?.navigationBar.topItem?.backButtonTitle = "🍺"
     }
 }

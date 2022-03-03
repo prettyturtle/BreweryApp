@@ -9,6 +9,11 @@ import UIKit
 import SnapKit
 import Kingfisher
 
+protocol LikeButtonProtocol: AnyObject {
+    func didTapLikeButton(brewery: Brewery)
+    func didTapUnLikeButton(brewery: Brewery)
+}
+
 enum Like {
     case like
     case unlike
@@ -23,6 +28,7 @@ class DetailViewController: UIViewController {
     var brewery: Brewery?
     var pushedFrom: PushedFrom?
     var likeStatus: Like = .unlike
+    weak var likeButtonDelegate: LikeButtonProtocol?
     private let userDefaultsManager = UserDefaultsManager()
     
     private let scrollView: UIScrollView = {
@@ -115,13 +121,14 @@ extension DetailViewController {
             navigationItem.rightBarButtonItem?.image = UIImage(systemName: "star.fill")
             brewery.like = true
             _ = userDefaultsManager.saveBrewery(brewery: brewery)
-            // TODO: 저장할때 이미 있다면 Alert를 띄어주기
             likeStatus = .like
+            likeButtonDelegate?.didTapLikeButton(brewery: brewery)
         case .like:
             navigationItem.rightBarButtonItem?.image = UIImage(systemName: "star")
             brewery.like = false
             userDefaultsManager.removeBrewery(brewery: brewery)
             likeStatus = .unlike
+            likeButtonDelegate?.didTapUnLikeButton(brewery: brewery)
         }
     }
 }
