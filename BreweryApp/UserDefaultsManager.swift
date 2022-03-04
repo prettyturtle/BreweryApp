@@ -8,8 +8,9 @@
 import Foundation
 
 struct UserDefaultsManager {
+    private let key = "BreweryList"
     func getBreweryList() -> [Brewery] {
-        guard let data = UserDefaults().data(forKey: "BreweryList"),
+        guard let data = UserDefaults().data(forKey: key),
               let breweryList = try? PropertyListDecoder().decode([Brewery].self, from: data) else { return [] }
         
         return breweryList
@@ -19,7 +20,7 @@ struct UserDefaultsManager {
         if breweryList.firstIndex(where: { $0.id == brewery.id }) == nil {
             breweryList.insert(brewery, at: 0)
             guard let encodedBreweryList = try? PropertyListEncoder().encode(breweryList) else { return false }
-            UserDefaults().setValue(encodedBreweryList, forKey: "BreweryList")
+            UserDefaults().setValue(encodedBreweryList, forKey: key)
             return true
         } else {
             return false
@@ -30,7 +31,7 @@ struct UserDefaultsManager {
         if let index = likedBreweryList.firstIndex(where: { $0.id == brewery.id }) {
             likedBreweryList.remove(at: index)
             guard let encodedBreweryList = try? PropertyListEncoder().encode(likedBreweryList) else { return }
-            UserDefaults().setValue(encodedBreweryList, forKey: "BreweryList")
+            UserDefaults().setValue(encodedBreweryList, forKey: key)
         }
     }
 //    func removeAll() {
@@ -45,5 +46,9 @@ struct UserDefaultsManager {
         } else {
             return true
         }
+    }
+    func update(breweryList: [Brewery]) {
+        guard let encodedBreweryList = try? PropertyListEncoder().encode(breweryList) else { return }
+        UserDefaults().setValue(encodedBreweryList, forKey: key)
     }
 }

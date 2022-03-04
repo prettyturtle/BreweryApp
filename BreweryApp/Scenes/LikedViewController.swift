@@ -85,9 +85,12 @@ extension LikedViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, titleForDeleteConfirmationButtonForRowAt indexPath: IndexPath) -> String? {
         return "삭제"
     }
-//    func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-//TODO: 셀 순서 변경 구현 예정
-//    }
+    func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        let itemToMove = likedBreweryList[sourceIndexPath.row]
+        likedBreweryList.remove(at: sourceIndexPath.row)
+        likedBreweryList.insert(itemToMove, at: destinationIndexPath.row)
+        userDefaultsManager.update(breweryList: likedBreweryList)
+    }
 }
 extension LikedViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
